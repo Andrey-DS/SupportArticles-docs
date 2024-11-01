@@ -12,7 +12,7 @@ ms.custom: sap:Active Directory\Active Directory Domain Controller specific boot
 
 This article explains how to recover from a corrupted Active Directory database or from a similar problem that prevents your computer from starting in normal mode.
 
-_Applies to:_ &nbsp; Windows Server 2003  
+_Applies to:_ &nbsp; Windows Server 2016, Windows Server 2019, Windows Server 2022  
 _Original KB number:_ &nbsp; 258062
 
 ## Summary
@@ -102,7 +102,7 @@ To resolve this problem, follow these steps:
 7. Verify that the files that are listed in the output in step 6 exist.
 8. Verify that the folders in the Ntdsutil output have the correct permissions. The correct permissions are specified in the following tables.
 
-    **Windows Server 2003**
+    **Windows Server 2016 or later**
 
     | Account| Permissions| Inheritance |
     |---|---|---|
@@ -111,20 +111,14 @@ To resolve this problem, follow these steps:
     |Creator Owner|Full Control|Subfolders and Files only|
     |Local Service|Create Folders / Append Data|This folder and subfolders|
 
-    **Windows 2000**
-
-    | Account| Permissions| Inheritance |
-    |---|---|---|
-    |Administrators|Full Control|This folder, subfolders, and files|
-    |System|Full Control|This folder, subfolders, and files|
-
+    
     > [!NOTE]
     > Additionally, the System account requires Full Control permissions on the following folders:
     >
     > - The root of the drive that contains the Ntds folder
     > - The %WINDIR% folder
     >
-    > In Windows Server 2003, the default location of the %WINDIR% folder is C:\WINDOWS. In Windows 2000, the default location of the %WINDIR% folder is C:\WINNT.
+    > In Windows Server 2016 or later, the default location of the %WINDIR% folder is C:\WINDOWS.
 9. Check the integrity of the Active Directory database. To do this, type _ntdsutil files integrity_ at the command prompt.
 
     If the integrity check indicates no errors, restart the domain controller in normal mode. If the integrity check doesn't finish without errors, continue to the following steps.
@@ -145,7 +139,7 @@ To resolve this problem, follow these steps:
     [232122](https://support.microsoft.com/help/232122) Performing offline defragmentation of the Active Directory database
 13. If the problem still exists after the offline defragmentation, and there are other functional domain controllers in the same domain, remove Active Directory from the server, and then reinstall Active Directory. To do this, follow the steps in the "Workaround" section in the following Microsoft Knowledge Base article:
 
-    [332199](https://support.microsoft.com/help/332199) Domain controllers do not demote gracefully when you use the Active Directory Installation Wizard to force demotion in Windows Server 2003 and in Windows 2000 Server
+    [332199](https://support.microsoft.com/help/332199) Domain controllers do not demote gracefully when you use the Active Directory Installation Wizard to force demotion
 
     > [!NOTE]
     > If your domain controller is running Microsoft Small Business Server, you cannot perform this step, because Small Business Server cannot be added to an existing domain as an additional domain controller (replica). If you have a system state backup that is newer than the tombstone lifetime, restore that system state backup instead of removing Active Directory from the server. By default, the tombstone lifetime is 60 days.
@@ -161,35 +155,14 @@ To resolve this problem, follow these steps:
 15. Before you perform a lossy repair, contact Microsoft Product Support Services to confirm that you've reviewed all possible recovery options and to verify that the database truly is in an unrecoverable state. For a complete list of Microsoft Product Support Services phone numbers and information about support costs, visit the following Microsoft Web site:
 
     [Contact Microsoft Support](https://support.microsoft.com/contactus/)
+    
+    To perform a lossy repair of a Windows Server domain controller, use the Esentutl.exe tool to recover the Active Directory database. To do this, type _esentutl /p_ at a command prompt on the Windows Server domain controller.
+    
+17. After the repair operation is complete, rename the .log files in the NTDS folder by using a different extension such as .bak, and try to start the domain controller in normal mode.
+    
+19. If you can start the domain controller in normal mode after the repair, migrate relevant Active Directory objects to a new forest as soon as possible. Because this lossy repair method fixes corruption by deleting data, it can cause later problems that are extremely difficult to troubleshoot. At the first opportunity after the repair, you must rebuild the domain to bring Active Directory back to a supported configuration.
 
-    On a Windows 2000 Server-based domain controller, use Ntdsutil to recover the Active Directory database. To do this, type _ntdsutil files repair_ at a command prompt in Directory Service Restore Mode.
 
-    To perform a lossy repair of a Windows Server 2003-based domain controller, use the Esentutl.exe tool to recover the Active Directory database. To do this, type _esentutl /p_ at a command prompt on the Windows Server 2003-based domain controller.
-16. After the repair operation is complete, rename the .log files in the NTDS folder by using a different extension such as .bak, and try to start the domain controller in normal mode.
-17. If you can start the domain controller in normal mode after the repair, migrate relevant Active Directory objects to a new forest as soon as possible. Because this lossy repair method fixes corruption by deleting data, it can cause later problems that are extremely difficult to troubleshoot. At the first opportunity after the repair, you must rebuild the domain to bring Active Directory back to a supported configuration.
+20. After the recovery, evaluate your current backup plan to make sure that you have scheduled system state backups frequently enough. Schedule system state backups at least every day, or after every significant change. System state backups must contain the required level of fault tolerance. For example, don't store backups on the same drive as the computer that you're backing up. Whenever possible, use more than one domain controller to avoid a single point of failure. Store backups in an off-site location so that site disaster (fire, theft, flood, computer theft) doesn't affect your ability to recover. The following Microsoft Web sites can help you develop a backup plan.
 
-    You can migrate users, computers, and groups by using the Active Directory Migration Tool (ADMT), Ldifde, or a non-Microsoft migration tool. ADMT can migrate user accounts, computer accounts, and security groups with or without the security identifier (SID) history. ADMT also migrates user profiles. To use ADMT in a Small Business Server environment, review the "Migrating from Small Business Server 2000 or Windows 2000 Server" white paper. To obtain this white paper, visit the following Microsoft Web site:
-
-    [Migrating from Small Business Server 2000 or Windows 2000 Server to Windows Small Business Server 2003](https://technet.microsoft.com/library/cc719892.aspx)
-
-    You can use Ldifde to export and import many types of objects from the damaged domain to the new domain. These objects include user accounts, computer accounts, security groups, organization units, Active Directory sites, subnets, and site links. Ldifde can't migrate the SID history. Ldifde is part of Windows 2000 Server and Windows Server 2003.
-
-    For more information about how to use Ldifde, click the following article number to view the article in the Microsoft Knowledge Base:
-
-    [237677](https://support.microsoft.com/help/237677) Using Ldifde to import and export directory objects to Active Directory
-
-    You can use the Group Policy Management Console (GPMC) to export the file system and the Active Directory part of the group policy object from the damaged domain to the new domain.
-
-    To obtain the GPMC, visit the following Microsoft Web site:
-
-    [Cloud Computing Services](https://www.microsoft.com/windowsserver2008/en/us/security-policy.aspx)
-
-    For information about how to migrate group policy objects by using the GPMC, review the "Migrate GPOs across domains with GPMC" white paper. To obtain this white paper, visit the following Microsoft Web site:
-
-    [Migrating GPOs Across Domains](https://technet.microsoft.com/library/cc785343%28ws.10%29.aspx)
-
-18. After the recovery, evaluate your current backup plan to make sure that you have scheduled system state backups frequently enough. Schedule system state backups at least every day, or after every significant change. System state backups must contain the required level of fault tolerance. For example, don't store backups on the same drive as the computer that you're backing up. Whenever possible, use more than one domain controller to avoid a single point of failure. Store backups in an off-site location so that site disaster (fire, theft, flood, computer theft) doesn't affect your ability to recover. The following Microsoft Web sites can help you develop a backup plan.
-
-    - Windows Server 2003: [Creating a Backup and Recovery Plan](https://technet.microsoft.com/library/cc739288%28ws.10%29.aspx)
-    - Windows 2000: [Chapter 14 - Data Backup and Recovery](https://technet.microsoft.com/library/bb727106.aspx)
-    - Windows Small Business Server: [Windows Server Essentials (Small Business Server)](https://technet.microsoft.com/library/cc514417.aspx)
+    - Windows Server 2016 and later: [Active Directory Forest Recovery Guide](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/forest-recovery-guide/ad-forest-recovery-guide)
