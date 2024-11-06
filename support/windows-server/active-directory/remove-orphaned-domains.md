@@ -45,7 +45,7 @@ Typically, when the last domain controller for a domain is demoted, the administ
 
 ## References
 
-For more information about the NTDSUTIL tool, see the Support Tools documentation located in the Support\Reskit folder on the Windows 2000 CD-ROM. The Help files included with the *Microsoft Windows 2000 Resource Kit* contain a **Books Online** link. You can click the link for information that describes the NTDSUTIL tool in greater detail.
+For more information about the NTDSUTIL tool, [NTDSUTIL](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc753343(v=ws.11))
 
 For more information about removing domain controllers from the domain that you're attempting to delete, see the following article:
 
