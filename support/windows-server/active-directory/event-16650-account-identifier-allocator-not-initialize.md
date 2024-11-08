@@ -133,7 +133,7 @@ Before you can delete the replication links to the Active Directory naming conte
 ### Remove domain controller metadata for all other domain controllers in the domain
 
 You can restore or connect a second domain controller to complete initial synchronization. If you cannot add a second domain controller, you must either perform a metadata cleanup on the non-existent domain controllers to remove them from the domain permanently or delete the replication links to the Active Directory naming contexts.
- For more information about how to remove metadata, click the following article number to view the article [Clean up Server Metadata.](/windows-server/identity/ad-ds/deploy/ad-ds-metadata-cleanup)  
+ For more information about how to remove metadata, click the following article number to view the article [Clean up Server Metadata.](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/deploy/ad-ds-metadata-cleanup)
 
 ### Verify that Active Directory objects that are related to RID allocation are valid
 
@@ -141,12 +141,16 @@ To verify that the Active Directory objects that are related to RID allocation a
 
 1. Verify that the Everyone group has the Access this computer from the network user right. The setting can be configured in the following location in the Group Policy Object Editor: `Computer Configuration\Windows Settings\Security Settings\Local Policies\User Rights Assignment`.
 
-2. Install the Windows 2000 Support Tools. These tools are available in the support folder on the Windows 2000 and the Windows Server 2003 CD-ROMs. When you have installed these tools, start `ADSI Edit`. To do this, follow these steps:  
+2. Install the Active Directory Administrative Tools from RSAT. When you have installed these tools, start `ADSI Edit`. To do this, follow these steps:  
 
       1. Click **Start**, click **Run**, type mmc in the **Open** box, and then click **OK**.
-      2. In Windows 2000, click **Console**, and then click **Add/Remove Snap-in**. In Windows Server 2003, click **File**, and then click **Add/Remove Snap-in**.
+      2. In Windows Server, click **File**, and then click **Add/Remove Snap-in**.
       3. In the **Add/Remove** snap-in, click **Add**, click **ADSIEdit**, and then click **Add**.
-      4. Click **Close**, and then click **OK**.  
+      4. Click **Close**, and then click **OK**.
+  
+Or
+
+    simple type adsiedit.msc
 
 3. In MMC, right-click **ADSIEdit**, and then click **Connect to**.
 4. In **Connections Settings**, under **Connection Point**, click **Select a well known naming context**. In the drop-down list, click **domain**, and then click **OK**.
