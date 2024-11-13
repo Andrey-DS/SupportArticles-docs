@@ -12,20 +12,20 @@ ms.custom: sap:Active Directory\LDAP configuration and interoperability, csstrou
 
 This article provides some information about the issue that anonymous LDAP operations to Active Directory are disabled on domain controllers.
 
-_Applies to:_ &nbsp; Windows Server 2003  
+_Applies to:_ &nbsp; Windows Server 2003 and later  
 _Original KB number:_ &nbsp; 326690
 
 ## Summary
 
-By default, anonymous Lightweight Directory Access Protocol (LDAP) operations to Active Directory, other than rootDSE searches and binds, are not permitted in Microsoft Windows Server 2003.
+By default, anonymous Lightweight Directory Access Protocol (LDAP) operations to Active Directory, other than rootDSE searches and binds, are not permitted in Microsoft Windows Server 2003 and later.
 
 ## More information
 
 Active Directory in earlier versions of Microsoft Windows-based domains accepts anonymous requests. In these versions, a successful result depends on having correct user permissions in Active Directory.
 
-With Windows Server 2003, only authenticated users may initiate an LDAP request against Windows Server 2003-based domain controllers. You can override this new default behavior by changing the seventh character of the dsHeuristics attribute on the DN path as follows:  
+With Windows Server 2003 and later, only authenticated users may initiate an LDAP request against Windows Server 2003-based domain controllers. You can override this new default behavior by changing the seventh character of the dsHeuristics attribute on the DN path as follows:  
 CN=Directory Service,CN=Windows NT,CN=Services,CN=Configuration, **Root domain in forest**  
-The DsHeuristics setting applies to all Windows Server 2003-based domain controllers in the same forest. The value is realized by domain controllers upon Active Directory replication without restarting Windows. Microsoft Windows 2000-based domain controllers do not support this setting and do not restrict anonymous operations if they are present in a Windows Server 2003-based forest.
+The DsHeuristics setting applies to all Windows Server 2003-based and later domain controllers in the same forest. The value is realized by domain controllers upon Active Directory replication without restarting Windows. Microsoft Windows 2000-based domain controllers do not support this setting and do not restrict anonymous operations if they are present in a Windows Server 2003-based forest and later.
 
 Valid values for the dsHeuristic attribute are 0 and 0000002. By default, the DsHeuristics attribute does not exist, but its internal default is 0. If you set the seventh character to 2 (0000002), anonymous clients can perform any operation that is permitted by the access control list (ACL), as can Windows 2000-based domain controllers.
 
